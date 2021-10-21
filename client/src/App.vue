@@ -4,12 +4,11 @@
     <hr />
     <!-- Form -->
     <div class="container has-text-left">
-      <div class="field">
-        <label for="" class="label">Category</label>
+      <div class="field has-addons">
         <p class="control">
           <span class="select">
             <select v-model="category">
-              <option disabled value="">Please Select</option>
+              <option disabled value="">Select Category</option>
               <option>Projects</option>
               <option>Discrete</option>
               <option>Web Dev</option>
@@ -18,10 +17,6 @@
             </select>
           </span>
         </p>
-      </div>
-
-      <div class="field">
-        <label class="label">Description</label>
         <div class="control is-expanded">
           <input
             type="text"
@@ -30,13 +25,11 @@
             v-model="description"
           />
         </div>
-      </div>
-
-      <div class="field">
         <p class="control">
           <button class="button is-info" @click="saveItem">Save</button>
         </p>
       </div>
+      <div class="field"></div>
     </div>
     <hr />
     <div class="notification" v-for="(item, i) in items" :key="item._id">
@@ -49,9 +42,14 @@
         <p class="column">
           {{ item.description }}
         </p>
-        <p class="column">
-          <span class="is-narrow">{{ item.category }}</span>
+        <p class="column is-narrow">
+          <span>{{ item.category }}</span>
         </p>
+        <div class="column is-narrow">
+          <span class="icon has-text-info" @click="removeItem(item, i)">
+            <i class="material-icons">delete</i>
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -79,9 +77,13 @@ export default {
         description: this.description,
         category: this.category,
       });
-      this.item.push(response.data);
+      this.items.push(response.data);
       this.description = "";
       this.category = "";
+    },
+    async removeItem(item, i) {
+      await axios.delete("api/toDOListItems/" + item._id);
+      this.items.splice(i, 1);
     },
   },
 };
@@ -92,5 +94,8 @@ export default {
   margin: auto;
   margin-top: 3rem;
   max-width: 80%;
+}
+.icon {
+  cursor: pointer;
 }
 </style>
